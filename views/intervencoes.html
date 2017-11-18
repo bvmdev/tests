@@ -1,0 +1,211 @@
+<div class="row">
+	<div class="col-md-8">
+		<button class="btn btn-primary" data-toggle="modal" data-target="#modalInterv"><span class="glyphicon glyphicon-plus"></span> Nova Atendimento</button>
+	</div>
+	<div class="col-md-4">
+		<input class="form-control" placeholder="Pesquisar" ng-model="pesquisar">
+	</div>
+</div>
+<hr>
+<div class="row">
+	<div class="col-md-12">
+		<table class="table table-striped" ng-init="lista()">
+			<thead>
+				<th>#</th>
+				<th>Origem</th>
+				<th>Sistema</th>
+				<th>Assunto</th>
+				<th>Inclusao</th>
+				<th>Finalizado</th>
+				<th>Status</th>
+				
+				<th>Relacionado</th>
+				<th></th>
+			</thead>
+			<tbody>
+				<!-- Listagem -->
+				<tr dir-paginate="int in interv|filter:pesquisar|itemsPerPage:30" pagination-id="pagInterv">
+					<td>{{int.id}}</td>
+					<td ng-click="showDescricao(int)" style="cursor:pointer;">{{int.origem}}</td>
+					<td ng-click="showDescricao(int)" style="cursor:pointer;">{{int.sistema}}</td>
+					<td ng-click="showDescricao(int)" style="cursor:pointer;">{{int.assunto}}</td>
+					<td ng-click="showDescricao(int)" style="cursor:pointer;">{{int.inclusao}}</td>
+					<td ng-click="showDescricao(int)" style="cursor:pointer;">{{int.encerramento}}</td>
+					<td ng-click="showDescricao(int)" style="cursor:pointer;"><span class="btn  btn-xs" ng-class="{'btn-warning': int.status == 'WAITING' , 'btn-success': int.status == 'DONE',
+						'btn-primary': int.status == 'DOING', 'btn-danger': int.status == 'TO DO' } ">{{int.status}}</span></td>					
+					<td ng-click="showDescricao(int)" style="cursor:pointer;">{{int.relacionado}}</td>
+					<td>							
+						<button class="btn  glyphicon glyphicon-pencil btn-xs" ng-click="inserirLogs(int)"><span>Log</span></button>						
+						<button class="btn btn-info btn-xs" ng-click="editar(int)"><span class="glyphicon glyphicon-pencil"></span> Editar</button>
+						<button class="btn btn-danger btn-xs" ng-click="excluir(int)"><span class="glyphicon glyphicon-trash"></span> Excluir</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		
+	</div>
+</div>
+<!-- Paginação -->
+<div class="row">
+	<div class="col-md-12 text-center">
+		<dir-pagination-controls pagination-id="pagInterv">
+	    </dir-pagination-controls>
+	</div>
+</div>
+
+<!-- Modal Cadastro e Edição -->
+<div class="modal fade" id="modalInterv" tabindex="-1" role="dialog" >
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="myModalLabel">Atendimento</h4>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-md-4">
+						<label>Origem</label>
+						<input class="form-control" type="text" ng-model="int.origem">
+					</div>
+					<div class="col-md-4">
+						<label>Sistema</label>
+						<select class="form-control" ng-model="int.sistema" ng-options="x.combo for x in sistema"></select>						
+					</div>
+					<div class="col-md-4">
+						<label>Relacionado</label>
+						<input class="form-control" type="text" ng-model="int.relacionado">
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<label>Assunto</label>
+						<input class="form-control" type="text" ng-model="int.assunto">
+					</div>					
+				</div>
+				<br />
+				<div class="row">
+					
+					<div class="col-md-4">
+						<label>Inclusão</label>						
+						<input type="text" class="form-control"  ng-model="int.inclusao" />
+					</div>
+					<div class="col-md-4">
+						<label>Finalizado</label>						
+						<input type="text" class="form-control"  ng-model="int.encerramento" />
+					</div>
+					<div class="col-md-4">
+						<label>Status</label>
+						
+						<select class="form-control" ng-model="int.status" ng-options="x.status for x in status"></select>						
+				
+					</div>	
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<label>Descrição</label>						
+						<textarea rows="5" ng-model="int.descricao" class="form-control"></textarea> 
+					</div>
+				</div>	
+				<div class="row">
+								
+				</div>
+				
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" ng-click="int = {}" data-dismiss="modal">Cancelar</button>
+				<button type="button" class="btn btn-primary" ng-click="salvar()">Salvar</button>
+			</div>
+
+			
+		</div>
+	</div>
+</div>
+
+<!-- Modal Detalhes -->
+<div class="modal fade" id="modalIntervDesc" tabindex="-2" role="dialog" >
+	<div class="modal-dialog" role="document" style="width:800px;"> 
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="myModalLabel">Detalhes do atendimento</h4>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-md-12">
+						<label>Descriçao</label>
+						<textarea rows="5" ng-model="int.descricao" class="form-control"></textarea> 
+					</div>
+				
+				</div>
+			
+				<div class="row">
+					<div class="col-md-12">
+					
+						<table class="table table-striped header-fixed">
+								<thead>
+									
+									<th class="col-md-3">&nbsp;</th>
+									<th>&nbsp;</th>
+									
+									<th></th>
+								</thead>
+								<tbody>
+									<!-- Listagem -->
+									<tr dir-paginate="log in intervLog |itemsPerPage:3" pagination-id="pagLog">
+										<td>{{log.data}}</td>
+										<td>{{log.log}}</td>									
+										<td>																		
+											<button class="btn btn-danger btn-xs" ng-click="excluirLog(log)"><span class="glyphicon glyphicon-trash"></span></button>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							<div class="row">
+									<div class="col-md-12 text-center">
+										<dir-pagination-controls pagination-id="pagLog">
+										</dir-pagination-controls>
+									</div>
+								</div>
+					</div>
+				
+				</div>
+			</div>	
+		</div>
+	</div>
+</div>
+
+<div class="modal fade modal-lg" id="modalIntervLog" tabindex="-3" role="dialog" >
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title" id="myModalLabel">Inserir Log em:  {{int.assunto}}</h4>
+				</div>				
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-md-8">
+									<label>Assunto</label>						
+									<input type="text" class="form-control" disabled  ng-model="int.assunto" />
+						</div>
+						<div class="col-md-4">
+								<label>Data</label>						
+								<input type="text" class="form-control"   ng-model="intLog.data" />
+						</div>
+					</div>
+				<br />
+				<div class="row">
+						<div class="col-md-12">
+							<label>Log</label>							
+							<textarea rows="5" ng-model="intLog.log" class="form-control"></textarea> 
+						</div>					
+				</div>					
+				
+				<div class="modal-footer">
+						<button type="button" class="btn btn-default" ng-click="intLog = {};int = {}" data-dismiss="modal">Cancelar</button>
+						<button type="button" class="btn btn-primary" ng-click="inserirLog(intLog)">Salvar</button>
+				</div>
+			</div>
+			
+			
+		</div>
+	</div>
